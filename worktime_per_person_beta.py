@@ -1,33 +1,38 @@
 import random
 
+
 class Person:
     def __init__(self, person_name, person_work_time):
         self.name = person_name
         self.work_time = person_work_time
 
     def print_info(self):
-        print("이름 : ",self.name)
-        print("수직시간 : ",self.work_time)
+        print("이름 : ", self.name)
+        print("수직시간 : ", self.work_time)
 
-def set_person(name_list,chn_work_time_list,person_list):
-    for i,person_name in enumerate(name_list):
+
+def set_person(name_list, chn_work_time_list, person_list):
+    for i, person_name in enumerate(name_list):
         if name_list.count(person_name) > 1:
             name_list.remove(person_name)
-        for j,person_work_time in enumerate(chn_work_time_list):
+        for j, person_work_time in enumerate(chn_work_time_list):
             if i == j:
-                person = Person(person_name,person_work_time)
+                person = Person(person_name, person_work_time)
                 person_list.append(person)
-                for k,person in enumerate(person_list):
+                for k, person in enumerate(person_list):
                     if person_list.count(person.name) > 1:
                         del person_list[k]
+
 
 def print_person(person_list):
     for person in person_list:
         person.print_info()
 
+
 def add_person():
     name = input("이름 : ")
     return name
+
 
 def cal_ave_worktime(name_list):
     ave_worktime = int(50 / len(name_list))
@@ -53,6 +58,7 @@ def cal_over_worktime(name_list, ave_work_time_list):
                 ave_work_time_list[turn] = new_work_time
     return ave_work_time_list
 
+
 def store_contact(person_list):
     f = open("person_db.txt", "wt")
     for person in person_list:
@@ -60,20 +66,20 @@ def store_contact(person_list):
         f.write(str(person.work_time) + '\n')
     f.close()
 
+
 def run():
     work_time_list = []
     name_list = []
     person_list = []
     while 1:
-
         name = add_person()
         name_list.append(name)
-        print("수직인원 : ",name_list)
+        print("수직인원 : ", name_list)
 
         ave_worktime = cal_ave_worktime(name_list)
         work_time_list.clear()
         work_time_list.append(ave_worktime)
-        ave_work_time_list = work_time_list*len(name_list)
+        ave_work_time_list = work_time_list * len(name_list)
         print(ave_work_time_list)
         chn_work_time_list = cal_over_worktime(name_list, ave_work_time_list)
         print(chn_work_time_list)
@@ -81,11 +87,12 @@ def run():
         print_person(person_list)
         store_contact(person_list)
 
+
 if __name__ == '__main__':
     run()
 
-#문제점 1
-#현재 인원 추가에 따른 수직시간이 바뀔때마다 클래스가 계속 생성됨.
-#이를 해결할 필요성 있음.
-#위 문제와 파일 불러오기만 입력하면 완성됨.
-#2017.10.부터 개발 재개할 예정
+    # 문제점 1
+    # 현재 인원 추가에 따른 수직시간이 바뀔때마다 클래스가 계속 생성됨.
+    # 이를 해결할 필요성 있음.
+    # 위 문제와 파일 불러오기만 입력하면 완성됨.
+    # 2017.10.부터 개발 재개할 예정
