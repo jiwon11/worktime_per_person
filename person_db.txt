@@ -1,10 +1,1 @@
-jiwon
-10
-cola
-10
-visa
-10
-man
-10
-woman
-10
+
