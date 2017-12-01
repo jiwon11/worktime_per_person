@@ -46,6 +46,7 @@ def add_person():  # 수직인원을 추가하는 함수
 def cal_ave_worktime(name_list):  # 평균 수직시간 계산 함수
     ave_worktime = int(50 / len(name_list))  # 평균 수직시간 계산식
     over_worktime = int(50 % len(name_list))  # 추가로 수직을 서야 하는 사람 수
+    print("수직인원은 {0}명입니다.".format(len(name_list)))
     print("명당 평균 수직시간은 {0}시간입니다.".format(ave_worktime))
     print("남은 수직시간은 {0}시간입니다.".format(over_worktime))
     return ave_worktime  # 랜덤 추가수직시간 배정을 위한 함수를 위해 평균 수직시간 결과를 반환함.

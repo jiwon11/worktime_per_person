@@ -31,6 +31,7 @@ def set_timetable(name_list,user_name,work_time_list):
 	user_timetable = [[0] * 5 for x in range(10)]
 	turn = name_list.index(user_name)
 	count = int(work_time_list[turn])
+	print("공강 시간을 {0}회 입력하세요.".format(count))
 	i = 1
 	while (i <= count):
 		day = input("요일을 입력하세요(월~금) : ")
@@ -63,52 +64,38 @@ def store_user(user_list):
 		f.write(str(user.timetable) + '\n')
 	f.close()
 
-def set_sat_user_name_list(sat_user_name_list, user_list, user,user_name,work_time_list):
-	print("(1)sat user name list : ", sat_user_name_list)
-	for pre_user in sat_user_name_list:
-		for list_user in user_list:
-			if list_user.name == pre_user:
-				pre_user_timetable = list_user.timetable
-				turn = name_list.index(user_name)
-				count = int(work_time_list[turn])
-				k=0
-				while k<=count:
-					print(k)
-					def cheak_list():
-						for a,userl in enumerate(user.timetable):
-							for b,prel in enumerate(pre_user_timetable):
-								while a <= count:
-									if a==b:
-										print(userl,prel)
-										print("=======================")
-										if userl==prel:
-											pass
-										else:
-											try:
-												sat_user_name_list.remove(user.name)
-												break
-											except ValueError:
-												pass
-									a=a+1
-					k=k+1
-					cheak_list()
-	print("(2)sat user name list : ", sat_user_name_list)
 
-
-def set_name_table(user, basic_timetable, name_table,sat_user_name_list):
-	user_name_list=[]
-	user_name_list.append(user.name)
+def set_name_table(user, basic_timetable, name_table,sat_user_name_list,copy_sat,user_list):
+	#print("copy_sat : ",copy_sat)
+	# 리스트에 추가는 밖에서 하고 if문을 통해 관계가 없는 것을 remove한다.
 	i=0
 	while i<10:
 		j = 0
 		while j<5:
-			a=user.timetable[i][j]
-			b=basic_timetable[i][j]
-			if a!=b:
+			if user.timetable[i][j] == 1:
 				if name_table[i][j] == "NONE":
-					name_table[i][j]=user_name_list
-				elif name_table[i][j] !="NONE":
-					name_table[i][j]=sat_user_name_list.copy()
+					name_table[i][j]=[user.name]
+				else:
+					if len(name_table[i][j])==2:
+						if j==0:day="월"
+						elif j == 1: day = "화"
+						elif j == 2: day = "수"
+						elif j == 3: day = "목"
+						elif j == 4:day = "금"
+						print(day+"요일",str((i+1))+"교시","시간의 시간당 수직자가 초과하였습니다.")
+						print("다른 공강 시간을 입력해주세요.")
+						return name_table
+					else:
+						name_table[i][j].append(user.name)
+					if name_table[i][j].count(user.name)>1:
+						try:name_table[i][j].remove(user.name)
+						except ValueError:pass
+			else:
+				if name_table[i][j] != "NONE":
+					try:
+						name_table[i][j].remove(user.name)
+					except ValueError:
+						pass
 			j=j+1
 		i=i+1
 	return name_table
@@ -140,32 +127,66 @@ def load_user_db(user_list, user_name_list):  # 텍스트파일로 저장된 per
 def load_name_table_db(name_table):  # 텍스트파일로 저장된 person 객체를 불러오는 함수
     try:
         f = open("name_table_db.txt", "rb")
-        d = pickle.load(f)
-        name_table = d
+        name_table = pickle.load(f)
         f.close()
     except EOFError:
 	    pass
+
+def delete_user(user_list, name): #이 함수는 연락처 리스트와 삭제할 이름을 인자로 입력받음.
+    for i, user in enumerate(user_list): #i번 순회하여
+        if user.name == name: #만약 i번째 인스턴스의 이름과 입력받은 이름이 같을 경우
+            del user_list[i]
+
+def print_menu():
+    print("1. 수직시간표 계산")
+    print("2. 사람 삭제")
+    print("3. 연락처 저장")
+    print("4. 종료")
+    menu = input("메뉴선택: ")
+    return int(menu)
 
 def run():
 	user_list = []
 	name_table = [["NONE"] * 5 for h in range(10)]
 	sat_user_name_list=[]
+	copy_sat = sat_user_name_list.copy()
 	#load_name_table_db(name_table)
 	#load_user_db(user_list,user_name_list)
-	while True:
-		user_name=set_user_name(name_list)
-		user_timetable = set_timetable(name_list, user_name, work_time_list)
-		user = User(user_name, user_timetable)
-		user.print_timetable()
-		user_list.append(user)
-		sat_user_name_list.append(user.name)
-		set_sat_user_name_list(sat_user_name_list, user_list, user,user_name,work_time_list)
-		chn_name_table=set_name_table(user, basic_timetable, name_table,sat_user_name_list)
-		name_table=chn_name_table
-		print("-----수직시간표-----")
-		pprint.pprint(chn_name_table)
-		if len(sat_user_name_list)==2:
-			sat_user_name_list.clear()
+	while True:  # 무한루프
+		menu = print_menu()
+		if menu == 1:
+			user_name=set_user_name(name_list)
+			user_timetable = set_timetable(name_list, user_name, work_time_list)
+			user = User(user_name, user_timetable)
+			user.print_timetable()
+			user_list.append(user)
+			sat_user_name_list.append(user.name)
+			chn_name_table=set_name_table(user, basic_timetable, name_table,sat_user_name_list,copy_sat,user_list)
+			name_table=chn_name_table
+			print("-----수직시간표-----")
+			pprint.pprint(name_table)
+		elif menu == 2:
+			name=input("삭제할 이름 : ")
+			delete_user(user_list,name)
+			i = 0
+			while i < 10:
+				j = 0
+				while j < 5:
+					try:
+						if name in name_table[i][j]:
+							name_table[i][j].remove(name)
+							if name_table[i][j]==[]:
+								name_table[i][j]="NONE"
+					except TypeError:
+						pass
+					j=j+1
+				i=i+1
+			print("-----수직시간표-----")
+			pprint.pprint(name_table)
+		elif menu == 3:
+			pass
+		elif menu == 4:
+			break
 		#if input("텍스트 파일로 저장하시겠습니까? ") == '네' or 'yes':  # 'yes'혹은 '네' 라고 입력할 경우 텍스트 파일로 저장
 			#store_user(user_list)
 			#store_name_table(chn_name_table)
@@ -182,9 +203,7 @@ worktime_per_person.print_person(person_list)
 print("==================================================================")
 run()
 
-#sat_user_name_list의 원소 갯수가 2개 초과이면 clear를 하고
-#전에 추가가 안된 이름을 sat_user_name_list에 추가함.
-#기존의 sat_user_name_list를 삭제하면 수직 시간표 상에서도 삭제 되므로
-#수직 시간표에 입력되는 것은 복사본을 입력해야 함.
-#새로 입력된 이름이 전에 추가가 안된 이름과 같으면 sat_user_name_list에 추가됨.
-#같지 않다면 새로운 위치에 이름이 추가됨.
+'''
+사용자 삭제 메뉴 추가
+그럴 경우 수직시간표에서도 사용자의 이름을 삭제하여야 함.
+'''
