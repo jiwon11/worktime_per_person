@@ -163,7 +163,7 @@ def run():
 			sat_user_name_list.append(user.name)
 			chn_name_table=set_name_table(user, basic_timetable, name_table,sat_user_name_list,copy_sat,user_list)
 			name_table=chn_name_table
-			print("-----수직시간표-----")
+			print("        -----수직시간표-----        ")
 			pprint.pprint(name_table)
 		elif menu == 2:
 			name=input("삭제할 이름 : ")
