@@ -181,7 +181,7 @@ def run():
 						pass
 					j=j+1
 				i=i+1
-			print("-----수직시간표-----")
+			print("      -----수직시간표-----      ")
 			pprint.pprint(name_table)
 		elif menu == 3:
 			pass
