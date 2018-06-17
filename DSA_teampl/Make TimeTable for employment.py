@@ -77,14 +77,27 @@ def cal_ave_worktime(name_list, part_list, part_time_dic):
 	return per_part_time_ave,per_part_time_ove
 
 
-def set_part(name_list,replace_part,part_list):
+def set_part(name_list,replace_part,part_list,person_list):
 	print('The part is divided like this',replace_part)
 	part_time = input("Write the allocated work time for each part : ")
 	part_time_dic = {}
 	for i in range(len(replace_part)):
-		for i in range(len(replace_part)):
-			part_time_dic[replace_part[i]] = part_time
+		part_time_dic[replace_part[i]] = part_time
 	print(part_time_dic)
+	ans = input("Do you want change employee's part?")
+	if ans == 'yes':
+		chn_part_name = input("change part employee's name :")
+		for person in person_list:
+			if chn_part_name == person.name:
+				print("change",person.name,"'s part")
+				chn_part = input("change part : ")
+				if chn_part not in part_time_dic.keys():
+					print(chn_part,"not in part list!!")
+				else:
+					person.part = chn_part
+					person.print_info()
+	else:
+		pass
 	return part_time_dic
 
 def cal_over_worktime(person_list,ove_worktime,part_list,ave_worktime):
@@ -144,12 +157,16 @@ def run_per_person():
 	ans = input("Do you want to change the part?")
 	replace_part=[]
 	if ans == 'yes' or non_over_lab_part_list == []:
-		input_part = input("Input the part : ")
-		replace_part = input_part.split(',')
-		print(replace_part)
+		answ = input("Do you want to add the part?")
+		if answ == 'yes':
+			input_part = input("Input the part : ")
+			replace_part = input_part.split(',')
+			print(replace_part)
+		elif answ == 'no':
+			replace_part = non_over_lab_part_list
 	elif ans == 'no':
 		replace_part = non_over_lab_part_list
-	part_time_dic = set_part(name_list, replace_part, part_list)
+	part_time_dic = set_part(name_list, replace_part, part_list,person_list)
 	while 1:  # 무한루프
 		print("--------------------------------------------------")
 		input_person_ans = input("Do you want to write employees?")
@@ -174,6 +191,7 @@ def run_per_person():
 			else:
 				pass
 		else:
+			store_person(person_list)
 			break
 		print("--------------------------------------------------")
 time = ['am9~am10','am10~am11','am11~pm12','pm12~pm1','pm1~pm2','pm2~pm3','pm3~pm4','pm4~pm5','pm5~pm6','pm6~pm7','pm7~pm8','pm8~pm9']

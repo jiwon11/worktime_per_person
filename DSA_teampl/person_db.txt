@@ -56,5 +56,5 @@ cash
 15
 siba
 5
-cash
+serving
 10
